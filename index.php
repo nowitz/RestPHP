@@ -8,7 +8,7 @@ dibi::connect(array(
             'driver'   => 'postgre',    //Zkratka pro PostgreSQL (zkratka pro MySQL - mysqli)
             'host'     => 'localhost',  
             'username' => 'nowitz',
-            'password' => 'Sikdydydydgshs',
+            'password' => '',
             'port'     => '5432',       // Defaultni port PostgreSQL (defaultní port MySQL - 3306)
             'database' => 'nowitz',     // Nazev databaze
             'charset'  => 'utf8',
