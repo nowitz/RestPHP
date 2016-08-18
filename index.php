@@ -7,10 +7,10 @@ require 'lib/debug.php';
 dibi::connect(array(
             'driver'   => 'postgre',    //Zkratka pro PostgreSQL (zkratka pro MySQL - mysqli)
             'host'     => 'localhost',  
-            'username' => 'nowitz',
+            'username' => '',
             'password' => '',
-            'port'     => '5432',       // Defaultni port PostgreSQL (defaultní port MySQL - 3306)
-            'database' => 'nowitz',     // Nazev databaze
+            'port'     => '5432',       // Defaultni port PostgreSQL (defaultni port MySQL - 3306)
+            'database' => '',           // Nazev databaze
             'charset'  => 'utf8',
         ));
 
