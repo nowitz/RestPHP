@@ -11,6 +11,9 @@ use Slim\Http\Response;
 function getIdName($table)
 {
     $idName = "name";
+    if ($table != "calendar"){
+        $idName = "id_name";
+    }
 //    $pom = explode("_",$table);
 //
 //    for ($i = 0; $i<sizeof($pom); $i++) {
@@ -31,7 +34,7 @@ function getIdName($table)
 $app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 
     // Sample log message
-    $this->logger->warning("Slim-Skeleton '/' route");
+    $this->logger->info("Slim-Skeleton '/' route");
 
     $query = array();
     array_push($query, 'SELECT * FROM %n', $args["table"]);
