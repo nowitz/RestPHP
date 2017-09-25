@@ -26,6 +26,7 @@ function getIdName($table)
     return $idName;
 }
 
+
 // Routes
 
 /**
@@ -45,6 +46,17 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
         array_push($query, 'WHERE %n = %s', $idName, $args["id"]);
     }
     $result = $this->dibi->query($query)->fetchAll();
+
+//    return $response->withStatus(200)
+//        ->withHeader('Content-Type', 'application/json')
+//        ->withHeader('Access-Control-Allow-Origin', '*')
+//        ->withHeader('Access-Control-Allow-Methods', ['OPTIONS', 'GET', 'POST', 'PUT', 'DELETE'])
+//        ->withHeader('Access-Control-Allow-Methods', ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'])
+//        ->withHeader('set Access-Control-Max-Age', '1000')
+//        ->withHeader('Access-Control-Expose-Headers',['X-Error', 'X-Error-Type', 'X-Access-Token', 'X-Error-Original'] )
+//        ->withHeader('Access-Control-Allow-Headers', ['x-requested-with', 'Content-Type', 'authorization', 'accept', 'client-security-token'])
+//        ->withHeader('Access-Control-Allow-Headers', ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'])
+//        ->write(json_encode($result));
 
     return $response->withJson($result, 200);
 
