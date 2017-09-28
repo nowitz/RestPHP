@@ -11,7 +11,7 @@ use Slim\Http\Response;
 function getIdName($table)
 {
     $idName = "name";
-    if ($table != "calendar"){
+    if ($table != "calendar") {
         $idName = "id_name";
     }
 //    $pom = explode("_",$table);
@@ -67,27 +67,33 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
 /**
  * Metoda, ktera zpracovava veskere POST pozadavky
  */
-$app->post('/{table}', function(Request $request, Response $response, array $args){
-    $result = $this->dibi->query('INSERT INTO %n',$args['table'], $request->getParsedBody());
-    return  $response->withJson($result,201);
+$app->post('/{table}', function (Request $request, Response $response, array $args) {
+    $params = $request->getParsedBody();
+    if ((strcmp($args['table'], "calendar") == 0) && (sizeof($params) == 2)) {
+        $result = $this->dibi->query('SELECT * FROM %n', $args["table"], 'WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
+        return $response->withJson($result->getRowCount(), 201);
+    }
+    $result = $this->dibi->query('INSERT INTO %n', $args['table'], $request->getParsedBody());
+    return $response->withJson($result, 201);
+
 });
 
 /**
  * Metoda, ktera zpracovava veskere PUT pozadavky
  */
-$app->put('/{table}/{id}/{day}', function(Request $request, Response $response, array $args){
+$app->put('/{table}/{id}/{day}', function (Request $request, Response $response, array $args) {
     $idName = getIdName($args["table"]);
-    $result = $this->dibi->query('UPDATE %n SET ',$args['table'], $request->getParsedBody(),'WHERE %n = %s AND day_number = %s', $idName, $args['id'], $args['day'] );
-    return  $response->withJson($result,200);
+    $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s AND day_number = %s', $idName, $args['id'], $args['day']);
+    return $response->withJson($result, 200);
 });
 
 /**
  * Metoda, ktera zpracovava veskere DELETE pozadavky
  */
-$app->delete('/{table}/{id}', function(Request $request, Response $response, array $args){
+$app->delete('/{table}/{id}', function (Request $request, Response $response, array $args) {
     $idName = getIdName($args["table"]);
-    $result = $this->dibi->query('DELETE FROM %n WHERE %n = %s ',$args['table'], $idName, $args['id']);
-    return  $response->withJson($result,204);
+    $result = $this->dibi->query('DELETE FROM %n WHERE %n = %s ', $args['table'], $idName, $args['id']);
+    return $response->withJson($result, 204);
 });
 
 
