@@ -70,8 +70,8 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
 $app->post('/{table}', function (Request $request, Response $response, array $args) {
     $params = $request->getParsedBody();
     if ((strcmp($args['table'], "calendar") == 0) && (sizeof($params) == 2)) {
-        $result = $this->dibi->query('SELECT * FROM %n', $args["table"], 'WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
-        return $response->withJson($result->getRowCount(), 201);
+        $result = $this->dibi->fetch('SELECT * FROM %n', $args["table"], 'WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
+        return $response->withJson($result, 201);
     }
     $result = $this->dibi->query('INSERT INTO %n', $args['table'], $request->getParsedBody());
     return $response->withJson($result, 201);
