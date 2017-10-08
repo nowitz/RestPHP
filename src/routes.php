@@ -26,6 +26,17 @@ function getIdName($table)
     return $idName;
 }
 
+/**
+ * Slouzi pro overeni autorizace
+ *
+ * @param Request $request
+ * @param $content
+ * @return bool
+ */
+function verifyAuthorization(Request $request, $content){
+    return (strcmp($request->getHeaders()["HTTP_AUTHORIZATION"][0], $content->get('settings')['authorization']) == 0);
+}
+
 
 // Routes
 
@@ -33,6 +44,10 @@ function getIdName($table)
  * Metoda, ktera zpracovava veskere GET pozadavky
  */
 $app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+
+    if(!verifyAuthorization($request, $this)){
+        return $response->withJson("Bad authorization!", 401);
+    }
 
     // Sample log message
     $this->logger->info("Slim-Skeleton '/' route");
@@ -68,6 +83,11 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
  * Metoda, ktera zpracovava veskere POST pozadavky
  */
 $app->post('/{table}', function (Request $request, Response $response, array $args) {
+
+    if(!verifyAuthorization($request, $this)){
+        return $response->withJson("Bad authorization!", 401);
+    }
+
     $params = $request->getParsedBody();
     if ((strcmp($args['table'], "calendar") == 0) && (sizeof($params) == 2)) {
         $result = $this->dibi->fetch('SELECT * FROM %n', $args["table"], 'WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
@@ -82,6 +102,11 @@ $app->post('/{table}', function (Request $request, Response $response, array $ar
  * Metoda, ktera zpracovava veskere PUT pozadavky
  */
 $app->put('/{table}/{id}[/{day}]', function (Request $request, Response $response, array $args) {
+
+    if(!verifyAuthorization($request, $this)){
+        return $response->withJson("Bad authorization!", 401);
+    }
+
     $idName = getIdName($args["table"]);
     if (isset($args["day"])) {
         $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s AND front = %s', $idName, $args['id'], $args['day']);
@@ -95,6 +120,11 @@ $app->put('/{table}/{id}[/{day}]', function (Request $request, Response $respons
  * Metoda, ktera zpracovava veskere DELETE pozadavky
  */
 $app->delete('/{table}/{id}', function (Request $request, Response $response, array $args) {
+
+    if(!verifyAuthorization($request, $this)){
+        return $response->withJson("Bad authorization!", 401);
+    }
+
     $idName = getIdName($args["table"]);
     $result = $this->dibi->query('DELETE FROM %n WHERE %n = %s ', $args['table'], $idName, $args['id']);
     return $response->withJson($result, 204);

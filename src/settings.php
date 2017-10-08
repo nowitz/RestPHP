@@ -22,5 +22,7 @@ return [
             'password' => 'root',
             'database' => 'calendar',
         ],
+        'authorization' => '12345'
+
     ],
 ];
