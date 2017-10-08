@@ -81,9 +81,13 @@ $app->post('/{table}', function (Request $request, Response $response, array $ar
 /**
  * Metoda, ktera zpracovava veskere PUT pozadavky
  */
-$app->put('/{table}/{id}/{day}', function (Request $request, Response $response, array $args) {
+$app->put('/{table}/{id}[/{day}]', function (Request $request, Response $response, array $args) {
     $idName = getIdName($args["table"]);
-    $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s AND day_number = %s', $idName, $args['id'], $args['day']);
+    if (isset($args["day"])) {
+        $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s AND front = %s', $idName, $args['id'], $args['day']);
+    }else {
+        $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s', $idName, $args['id']);
+    }
     return $response->withJson($result, 200);
 });
 
