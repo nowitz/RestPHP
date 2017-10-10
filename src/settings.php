@@ -20,7 +20,7 @@ return [
             'host'     => 'localhost',
             'username' => 'root',
             'password' => 'root',
-            'database' => 'calendar',
+            'database' => 'happy_windows',
         ],
         'authorization' => '12345'
 

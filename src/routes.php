@@ -3,28 +3,6 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-/**
- * Metoda, ktera vrati nazev id sloupce z nazvu tabulky
- * @param $table nazev tabulky
- * @return string nazev id sloupce
- */
-function getIdName($table)
-{
-    $idName = "name";
-    if ($table != "calendar") {
-        $idName = "id_name";
-    }
-//    $pom = explode("_",$table);
-//
-//    for ($i = 0; $i<sizeof($pom); $i++) {
-//        if(substr($pom[$i], -1) == "s"){
-//            $idName = $idName."_".substr($pom[$i], 0, -1);
-//        }else{
-//            $idName = $idName."_".$pom[$i];
-//        }
-//    }
-    return $idName;
-}
 
 /**
  * Slouzi pro overeni autorizace
@@ -33,19 +11,36 @@ function getIdName($table)
  * @param $content
  * @return bool
  */
-function verifyAuthorization(Request $request, $content){
+function verifyAuthorization(Request $request, $content)
+{
     return (strcmp($request->getHeaders()["HTTP_AUTHORIZATION"][0], $content->get('settings')['authorization']) == 0);
 }
 
+// Login
 
-// Routes
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/login', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $params = $request->getParsedBody();
+    $result = $this->dibi->fetch('SELECT * FROM calendar WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
+    return $response->withJson($result, 201);
+});
+
+
+// Calendar
 
 /**
  * Metoda, ktera zpracovava veskere GET pozadavky
  */
-$app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+$app->get('/calendar[/{name}]', function (Request $request, Response $response, array $args) {
 
-    if(!verifyAuthorization($request, $this)){
+    if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
 
@@ -53,12 +48,10 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
     $this->logger->info("Slim-Skeleton '/' route");
 
     $query = array();
-    array_push($query, 'SELECT * FROM %n', $args["table"]);
+    array_push($query, 'SELECT * FROM calendar');
 
-    $idName = getIdName($args["table"]);
-
-    if (isset($args["id"])) {
-        array_push($query, 'WHERE %n = %s', $idName, $args["id"]);
+    if (isset($args["name"])) {
+        array_push($query, 'WHERE name = %s', $args["name"]);
     }
     $result = $this->dibi->query($query)->fetchAll();
 
@@ -82,18 +75,12 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
 /**
  * Metoda, ktera zpracovava veskere POST pozadavky
  */
-$app->post('/{table}', function (Request $request, Response $response, array $args) {
+$app->post('/calendar', function (Request $request, Response $response) {
 
-    if(!verifyAuthorization($request, $this)){
+    if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
-
-    $params = $request->getParsedBody();
-    if ((strcmp($args['table'], "calendar") == 0) && (sizeof($params) == 2)) {
-        $result = $this->dibi->fetch('SELECT * FROM %n', $args["table"], 'WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
-        return $response->withJson($result, 201);
-    }
-    $result = $this->dibi->query('INSERT INTO %n', $args['table'], $request->getParsedBody());
+    $result = $this->dibi->query('INSERT INTO calendar', $request->getParsedBody());
     return $response->withJson($result, 201);
 
 });
@@ -101,32 +88,163 @@ $app->post('/{table}', function (Request $request, Response $response, array $ar
 /**
  * Metoda, ktera zpracovava veskere PUT pozadavky
  */
-$app->put('/{table}/{id}[/{day}]', function (Request $request, Response $response, array $args) {
+$app->put('/calendar/{name}', function (Request $request, Response $response, array $args) {
 
-    if(!verifyAuthorization($request, $this)){
+    if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
-
-    $idName = getIdName($args["table"]);
-    if (isset($args["day"])) {
-        $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s AND front = %s', $idName, $args['id'], $args['day']);
-    }else {
-        $result = $this->dibi->query('UPDATE %n SET ', $args['table'], $request->getParsedBody(), 'WHERE %n = %s', $idName, $args['id']);
-    }
+    $result = $this->dibi->query('UPDATE calendar SET ', $request->getParsedBody(), 'WHERE name = %s', $args['name']);
     return $response->withJson($result, 200);
 });
 
 /**
  * Metoda, ktera zpracovava veskere DELETE pozadavky
  */
-$app->delete('/{table}/{id}', function (Request $request, Response $response, array $args) {
+$app->delete('/calendar/{name}', function (Request $request, Response $response, array $args) {
 
-    if(!verifyAuthorization($request, $this)){
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('DELETE FROM calendar WHERE name = %s ', $args['name']);
+    return $response->withJson($result, 204);
+});
+
+
+// Flipper
+
+/**
+ * Metoda, ktera zpracovava veskere GET pozadavky
+ */
+$app->get('/flipper', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('SELECT * FROM flipper')->fetchAll();
+    return $response->withJson($result, 200);
+});
+
+$app->get('/flipper/{name}[/{id}]', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
 
-    $idName = getIdName($args["table"]);
-    $result = $this->dibi->query('DELETE FROM %n WHERE %n = %s ', $args['table'], $idName, $args['id']);
+    $query = array();
+    array_push($query, 'SELECT * FROM flipper WHERE id_name = %s', $args["name"]);
+
+    if (isset($args["id"])) {
+        array_push($query, 'and id = %s', $args["id"]);
+    }
+    $result = $this->dibi->query($query)->fetchAll();
+
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/flipper', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('INSERT INTO flipper', $request->getParsedBody());
+    return $response->withJson($result, 201);
+
+});
+
+/**
+ * Metoda, ktera zpracovava veskere PUT pozadavky
+ */
+$app->put('/flipper/{name}/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('UPDATE flipper SET ', $request->getParsedBody(), 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere DELETE pozadavky
+ */
+$app->delete('/flipper/{name}/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('DELETE FROM flipper WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+    return $response->withJson($result, 204);
+});
+
+
+
+// Warning
+
+/**
+ * Metoda, ktera zpracovava veskere GET pozadavky
+ */
+$app->get('/warning', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('SELECT * FROM warning')->fetchAll();
+    return $response->withJson($result, 200);
+});
+
+$app->get('/warning/{name}[/{id}]', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $query = array();
+    array_push($query, 'SELECT * FROM warning WHERE id_name = %s', $args["name"]);
+
+    if (isset($args["id"])) {
+        array_push($query, 'and id = %s', $args["id"]);
+    }
+    $result = $this->dibi->query($query)->fetchAll();
+
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/warning', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('INSERT INTO warning', $request->getParsedBody());
+    return $response->withJson($result, 201);
+
+});
+
+/**
+ * Metoda, ktera zpracovava veskere PUT pozadavky
+ */
+$app->put('/warning/{name}/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('UPDATE warning SET ', $request->getParsedBody(), 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere DELETE pozadavky
+ */
+$app->delete('/warning/{name}/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('DELETE FROM warning WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
     return $response->withJson($result, 204);
 });
 
