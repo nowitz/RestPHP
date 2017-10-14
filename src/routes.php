@@ -167,6 +167,33 @@ $app->put('/flipper/{name}/{id}', function (Request $request, Response $response
 });
 
 /**
+ * Metoda, ktera zpracovava veskere PATCH pozadavky
+ * Jedna se o kontrolu datumu. Pokud spatnej datum tak return 2
+ */
+$app->patch('/flipper/{name}/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $body = $request->getParsedBody()["date"];
+
+    $expire_dt = new DateTime($body["date"]);
+    $today = new DateTime('');
+//    dumpf($today);
+//    dumpf($expire_dt);
+//    dumpf($today->format("Y-m-d") < $expire_dt->format("Y-m-d"));
+    if ($today->format("Y-m-d") < $expire_dt->format("Y-m-d")) {
+//      podvod
+        $result = 2;
+    } else {
+//      je to OK, update zaznamu
+        $result = $this->dibi->query('UPDATE flipper SET ', ['open' => 1], 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+    }
+    return $response->withJson($result, 200);
+});
+
+/**
  * Metoda, ktera zpracovava veskere DELETE pozadavky
  */
 $app->delete('/flipper/{name}/{id}', function (Request $request, Response $response, array $args) {
@@ -177,7 +204,6 @@ $app->delete('/flipper/{name}/{id}', function (Request $request, Response $respo
     $result = $this->dibi->query('DELETE FROM flipper WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
     return $response->withJson($result, 204);
 });
-
 
 
 // Warning
