@@ -74,13 +74,21 @@ $app->get('/calendar[/{name}]', function (Request $request, Response $response, 
 
 /**
  * Metoda, ktera zpracovava veskere POST pozadavky
+ * 1 - vytvoreno
+ * 2 - duplicita
  */
 $app->post('/calendar', function (Request $request, Response $response) {
 
     if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
-    $result = $this->dibi->query('INSERT INTO calendar', $request->getParsedBody());
+    $count = $this->dibi->query('SELECT * FROM calendar WHERE name = %s', $request->getParsedBody()['name'])->getRowCount();
+
+    if ($count == 0) {
+        $result = $this->dibi->query('INSERT INTO calendar', $request->getParsedBody());
+    } else {
+        $result = 2;
+    }
     return $response->withJson($result, 201);
 
 });
