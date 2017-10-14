@@ -3,6 +3,6 @@ composer.lock
 /nbproject/private/
 vendor/
 .idea/
-/logs/app.log
+logs/app.log
 bower_components/
 node_modules/*
