@@ -4,20 +4,21 @@ create table calendar
   name varchar(128) UNIQUE not null comment 'Nazev kalendare, musi byt jedinecnej.',
   password varchar(128) not null comment 'Heslo ke kalendari.',
   cost tinyint(1) not null comment 'Zda to bylo zadarmo nebo zaplaceny.',
-  background longtext not null comment 'Obrazek v base64 kodovani',
-  border varchar(128) default 'black' null
+  background longtext not null comment 'Obrazek v base64 kodovani'
 );
 
 create table flipper
 (
   id INT  NOT NULL primary key AUTO_INCREMENT,
-  id_name varchar(128) null,
-  front longtext null,
-  text text null,
-  back longtext null,
-  date timestamp default CURRENT_TIMESTAMP not null,
-  open tinyint(1) default '0' null,
-  conditional tinyint(1) default '0' null,
+  id_name      VARCHAR(128)                        NULL,
+  front        LONGTEXT                            NULL,
+  text         TEXT                                NULL,
+  back         LONGTEXT                            NULL,
+  date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  open         TINYINT(1) DEFAULT '0'              NULL,
+  conditional  TINYINT(1) DEFAULT '0'              NULL,
+  text_color   VARCHAR(64) DEFAULT 'black'         NOT NULL,
+  border_color VARCHAR(64) DEFAULT 'black'         NOT NULL,
   constraint flipper_calendar_name_fk
   foreign key (id_name) references calendar (name)
 );
