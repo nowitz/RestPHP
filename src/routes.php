@@ -196,7 +196,9 @@ $app->patch('/flipper/{name}/{id}', function (Request $request, Response $respon
         $result = 2;
     } else {
 //      je to OK, update zaznamu
-        $result = $this->dibi->query('UPDATE flipper SET ', ['open' => 1], 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+        if($body["test"] == 1){
+            $result = $this->dibi->query('UPDATE flipper SET ', ['open' => 1], 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+        }
     }
     return $response->withJson($result, 200);
 });
