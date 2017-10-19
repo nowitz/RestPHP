@@ -32,6 +32,20 @@ $app->post('/login', function (Request $request, Response $response) {
     return $response->withJson($result, 201);
 });
 
+// Check calendar name
+
+/**
+ * Metoda, ktera overi nazev kalendare
+ */
+$app->get('/check/{name}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $result = $this->dibi->query('SELECT * FROM calendar WHERE name = %s', $args['name'])->getRowCount();
+    return $response->withJson($result, 200);
+});
 
 // Calendar
 
