@@ -117,6 +117,64 @@ $app->delete('/calendar/{name}', function (Request $request, Response $response,
     return $response->withJson($result, 204);
 });
 
+// User
+
+/**
+ * Metoda, ktera zpracovava veskere GET pozadavky
+ */
+$app->get('/user[/{name}]', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $query = array();
+    array_push($query, 'SELECT * FROM user');
+
+    if (isset($args["name"])) {
+        array_push($query, 'WHERE id_name = %s', $args["name"]);
+    }
+    $result = $this->dibi->query($query)->fetchAll();
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/user', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('INSERT INTO user', $request->getParsedBody());
+    return $response->withJson($result, 201);
+
+});
+
+/**
+ * Metoda, ktera zpracovava veskere PUT pozadavky
+ */
+$app->put('/user/{name}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('UPDATE user SET ', $request->getParsedBody(), 'WHERE id_name = %s', $args['name']);
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere DELETE pozadavky
+ */
+$app->delete('/user/{name}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('DELETE FROM user WHERE id_name = %s', $args['name']);
+    return $response->withJson($result, 204);
+});
+
 
 // Flipper
 
