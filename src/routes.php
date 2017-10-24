@@ -16,7 +16,40 @@ function verifyAuthorization(Request $request, $content)
     return (strcmp($request->getHeaders()["HTTP_AUTHORIZATION"][0], $content->get('settings')['authorization']) == 0);
 }
 
-// Login
+function sendNotification($name)
+{
+    $content = array(
+        "en" => 'English Message'
+    );
+
+    $fields = array(
+        'app_id' => "5db769bf-d46f-4423-9a58-9d33d0cc6418",
+        'ios_badgeType' => "Increase",
+        'ios_badgeCount' => 1,
+        'filters' => array(array("field" => "tag", "key" => "calendar", "relation" => "=", "value" => $name)),
+        'data' => array("foo" => "bar"),
+        'contents' => $content
+    );
+
+    $fields = json_encode($fields);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+        'Authorization: Basic NzI0ODE3YTYtOTRiNC00MTgyLWFkZGEtYzk5YzdlNWM2Mzdl'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+// ----------------------------- Login -----------------------------
+
 
 /**
  * Metoda, ktera zpracovava veskere POST pozadavky
@@ -32,7 +65,7 @@ $app->post('/login', function (Request $request, Response $response) {
     return $response->withJson($result, 201);
 });
 
-// Check calendar name
+// ----------------------------- Check calendar name -----------------------------
 
 /**
  * Metoda, ktera overi nazev kalendare
@@ -47,7 +80,31 @@ $app->get('/check/{name}', function (Request $request, Response $response, array
     return $response->withJson($result, 200);
 });
 
-// Calendar
+// ----------------------------- Automaticky notifikace -----------------------------
+
+/**
+ * Metoda pro zasilani automatickych notfikaci
+ */
+$app->get('/notification', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $resultValue = array();
+    $today = new DateTime('');
+    $result = $this->dibi->query('SELECT id_name FROM flipper WHERE date >= %t AND date <= %t',
+        $today->setTime(0, 0, 0)->format("Y-m-d H:i:s"), $today->setTime(23, 59, 59)->format("Y-m-d H:i:s"))->fetchAll();
+    foreach ($result as $value) {
+        $rs = sendNotification($value["id_name"]);
+        array_push($resultValue, $rs);
+    }
+    $this->logger->info("nofitication-OK", $resultValue);
+    return $response->withJson($resultValue, 200);
+});
+
+
+// ----------------------------- Calendar -----------------------------
 
 /**
  * Metoda, ktera zpracovava veskere GET pozadavky
@@ -131,7 +188,7 @@ $app->delete('/calendar/{name}', function (Request $request, Response $response,
     return $response->withJson($result, 204);
 });
 
-// User
+// ----------------------------- User -----------------------------
 
 /**
  * Metoda, ktera zpracovava veskere GET pozadavky
@@ -190,7 +247,7 @@ $app->delete('/user/{name}', function (Request $request, Response $response, arr
 });
 
 
-// Flipper
+// ----------------------------- Flipper -----------------------------
 
 /**
  * Metoda, ktera zpracovava veskere GET pozadavky
@@ -268,7 +325,7 @@ $app->patch('/flipper/{name}/{id}', function (Request $request, Response $respon
         $result = 2;
     } else {
 //      je to OK, update zaznamu
-        if($request->getParsedBody()["template"] == 0){
+        if ($request->getParsedBody()["template"] == 0) {
             $result = $this->dibi->query('UPDATE flipper SET ', ['open' => 1], 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
         }
     }
@@ -288,7 +345,7 @@ $app->delete('/flipper/{name}/{id}', function (Request $request, Response $respo
 });
 
 
-// Warning
+// ----------------------------- Warning -----------------------------
 
 /**
  * Metoda, ktera zpracovava veskere GET pozadavky
