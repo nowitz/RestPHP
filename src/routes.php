@@ -18,17 +18,14 @@ function verifyAuthorization(Request $request, $content)
 
 function sendNotification($name)
 {
-    $content = array(
-        "en" => 'English Message'
-    );
+//    $content = array(
+//        "en" => 'English Message'
+//    );
 
     $fields = array(
         'app_id' => "5db769bf-d46f-4423-9a58-9d33d0cc6418",
-        'ios_badgeType' => "Increase",
-        'ios_badgeCount' => 1,
         'filters' => array(array("field" => "tag", "key" => "calendar", "relation" => "=", "value" => $name)),
-        'data' => array("foo" => "bar"),
-        'contents' => $content
+        'template_id' => "89df93f6-ce13-407f-b672-adf2ece7c51a"
     );
 
     $fields = json_encode($fields);
