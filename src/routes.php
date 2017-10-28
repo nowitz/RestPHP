@@ -90,7 +90,7 @@ $app->get('/notification', function (Request $request, Response $response, array
 
     $resultValue = array();
     $today = new DateTime('');
-    $result = $this->dibi->query('SELECT id_name FROM flipper WHERE date >= %t AND date <= %t',
+    $result = $this->dibi->query('SELECT id_name FROM flipper WHERE open = 0 AND date >= %t AND date <= %t',
         $today->setTime(0, 0, 0)->format("Y-m-d H:i:s"), $today->setTime(23, 59, 59)->format("Y-m-d H:i:s"))->fetchAll();
     foreach ($result as $value) {
         $rs = sendNotification($value["id_name"]);
