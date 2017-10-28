@@ -3,6 +3,7 @@ create table calendar
 	id int auto_increment	primary key,
 	name varchar(128) not null comment 'Nazev kalendare, musi byt jedinecnej.',
 	password varchar(128) not null comment 'Heslo ke kalendari.',
+	password_edit varchar(128) not null comment 'Heslo pro editaci kalendare',
 	background longtext not null comment 'Obrazek v base64 kodovani',
 	template tinyint default '0' not null comment '0-nejedna se o sablonu / 1-jedna se o sablonu',
 	constraint id	unique (id),

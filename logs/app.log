@@ -131,3 +131,31 @@
 [2017-09-22 22:53:17] slim-app.WARNING: Slim-Skeleton '/' route [] {"uid":"7f6389b"}
 [2017-09-22 22:53:22] slim-app.WARNING: Slim-Skeleton '/' route [] {"uid":"57df671"}
 [2017-09-22 22:53:36] slim-app.WARNING: Slim-Skeleton '/' route [] {"uid":"14db061"}
+[2017-10-14 15:39:44] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"5658253"}
+[2017-10-14 15:42:53] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"3418fc5"}
+[2017-10-14 15:43:00] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"a1d8678"}
+[2017-10-14 15:43:07] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"03b5f09"}
+[2017-10-14 15:43:17] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"0a290e5"}
+[2017-10-14 15:44:40] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"5f2181f"}
+[2017-10-24 20:27:08] slim-app.INFO: nofitication-OK [] {"uid":"bae657b"}
+[2017-10-24 20:29:22] slim-app.INFO: nofitication-OK ["{\"id\":\"dd473d87-e046-4758-a8b6-5ffa77384783\",\"recipients\":1}"] {"uid":"3eadfee"}
+[2017-10-24 20:59:56] slim-app.INFO: nofitication-OK ["{\"errors\":[\"Option ios_badgeType must be blank, None, SetTo, or Increase\"]}"] {"uid":"fa85497"}
+[2017-10-24 21:00:14] slim-app.INFO: nofitication-OK ["{\"id\":\"151f99aa-328f-48a7-a92e-43055ceb6fe8\",\"recipients\":1}"] {"uid":"2f3c165"}
+[2017-10-24 22:19:03] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}"] {"uid":"27021bd"}
+[2017-10-24 22:19:04] slim-app.INFO: nofitication-OK ["{\"id\":\"bed60709-3198-4616-8537-0063171ec36c\",\"recipients\":1}"] {"uid":"27021bd"}
+[2017-10-24 22:21:30] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}"] {"uid":"dbfe370"}
+[2017-10-24 22:21:30] slim-app.INFO: nofitication-OK ["{\"id\":\"2a1994e9-36e5-4fb3-8614-8f24ac761711\",\"recipients\":1}"] {"uid":"dbfe370"}
+[2017-10-24 22:22:06] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}"] {"uid":"3624b20"}
+[2017-10-24 22:22:06] slim-app.INFO: nofitication-OK ["{\"id\":\"de653b34-59a0-46e0-9d2d-509c91b5aee4\",\"recipients\":1}"] {"uid":"3624b20"}
+[2017-10-24 22:23:07] slim-app.INFO: nofitication-OK [1] {"uid":"bb13ccf"}
+[2017-10-24 22:23:07] slim-app.INFO: nofitication-OK [1] {"uid":"bb13ccf"}
+[2017-10-24 22:24:00] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}"] {"uid":"25e35f0"}
+[2017-10-24 22:24:00] slim-app.INFO: nofitication-OK ["{\"id\":\"8a3fd083-2f5e-408a-b60f-ab945d42b809\",\"recipients\":1}"] {"uid":"25e35f0"}
+[2017-10-24 22:24:47] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}"] {"uid":"96030c7"}
+[2017-10-24 22:24:47] slim-app.INFO: nofitication-OK ["{\"id\":\"61055ea6-1bcc-4e3e-99ea-959bbed01be9\",\"recipients\":1}"] {"uid":"96030c7"}
+[2017-10-24 22:29:45] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}","{\"id\":\"52f334eb-56ee-4210-a941-29b648736e4c\",\"recipients\":1}"] {"uid":"a16ea6d"}
+[2017-10-24 22:30:40] slim-app.INFO: nofitication-OK ["{\"id\":\"\",\"recipients\":0,\"errors\":[\"All included players are not subscribed\"]}","{\"id\":\"93b568d5-2130-49f6-b98f-14618bdffebe\",\"recipients\":1}"] {"uid":"7b03ccd"}
+[2017-10-28 20:36:00] slim-app.INFO: nofitication-OK ["{\"id\":\"d3777a46-f1ec-4d10-ad24-ebc4a44d5839\",\"recipients\":2}"] {"uid":"b652eeb"}
+[2017-10-28 20:37:38] slim-app.INFO: nofitication-OK [] {"uid":"ae9314d"}
+[2017-10-28 20:38:10] slim-app.INFO: nofitication-OK [] {"uid":"1375913"}
+[2017-10-28 20:38:25] slim-app.INFO: nofitication-OK ["{\"id\":\"3ca2a7ae-ac7e-4395-b92d-03807cdf0de6\",\"recipients\":2}"] {"uid":"b5015d3"}
