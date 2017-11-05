@@ -425,3 +425,61 @@ $app->delete('/warning/{name}/{id}', function (Request $request, Response $respo
 });
 
 
+// ----------------------------- Pays -----------------------------
+
+/**
+ * Metoda, ktera zpracovava veskere GET pozadavky
+ */
+$app->get('/pays[/{id}]', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $query = array();
+    array_push($query, 'SELECT * FROM pays');
+
+    if (isset($args["id"])) {
+        array_push($query, 'WHERE id = %i', $args["id"]);
+    }
+    $result = $this->dibi->query($query)->fetchAll();
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/pays', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('INSERT INTO pays', $request->getParsedBody());
+    return $response->withJson($result, 201);
+
+});
+
+/**
+ * Metoda, ktera zpracovava veskere PUT pozadavky
+ */
+$app->put('/pays/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('UPDATE pays SET ', $request->getParsedBody(), 'WHERE id = %i', $args['id']);
+    return $response->withJson($result, 200);
+});
+
+/**
+ * Metoda, ktera zpracovava veskere DELETE pozadavky
+ */
+$app->delete('/pays/{id}', function (Request $request, Response $response, array $args) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+    $result = $this->dibi->query('DELETE FROM pays WHERE id = %i', $args['id']);
+    return $response->withJson($result, 204);
+});
+
