@@ -58,3 +58,22 @@ create table warning
 
 create index id_warning	on warning (id);
 create index id_name_warning	on warning (id_name);
+
+create table pays
+(
+	id int auto_increment	primary key,
+	payment_order_id varchar(2048) null,
+	merchant_order_number varchar(2048) null,
+	payment_order_status_id varchar(2048) null,
+	currency_id varchar(2048) null,
+	amount varchar(2048) null,
+	currency_base_units varchar(2048) null,
+	payment_order_status_description varchar(2048) null,
+	hash varchar(2048) null,
+	validate varchar(1024) null,
+	error varchar(1024) null,
+	constraint id	unique (id)
+);
+
+create index id_pays	on pays (id);
+
