@@ -58,7 +58,7 @@ $app->post('/login', function (Request $request, Response $response) {
     }
 
     $params = $request->getParsedBody();
-    $result = $this->dibi->fetch('SELECT * FROM calendar WHERE name = %s AND password_edit = %s', $params["calendar"], $params["pass"]);
+    $result = $this->dibi->fetch('SELECT * FROM calendar WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
     return $response->withJson($result, 201);
 });
 
@@ -72,7 +72,7 @@ $app->post('/login/admin', function (Request $request, Response $response) {
     }
 
     $params = $request->getParsedBody();
-    $result = $this->dibi->fetch('SELECT * FROM calendar WHERE name = %s AND password = %s', $params["calendar"], $params["pass"]);
+    $result = $this->dibi->fetch('SELECT * FROM calendar WHERE name = %s AND password_edit = %s', $params["calendar"], $params["pass"]);
     return $response->withJson($result, 201);
 });
 
