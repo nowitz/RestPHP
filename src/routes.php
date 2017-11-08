@@ -310,7 +310,19 @@ $app->put('/flipper/{name}/{id}', function (Request $request, Response $response
     if (!verifyAuthorization($request, $this)) {
         return $response->withJson("Bad authorization!", 401);
     }
-    $result = $this->dibi->query('UPDATE flipper SET ', $request->getParsedBody(), 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
+
+    $arrayParam = $request->getParsedBody();
+
+    //pokud pri updatu flipperu je nastavenej datum na vetsi den nez je dnesek, dojde k updatu open = 0 (nastavi se FRONT)
+    if (array_key_exists("date", $arrayParam)) {
+        $expire_dt = new DateTime($arrayParam["date"]);
+        $today = new DateTime('');
+        if ($today->format("Y-m-d") < $expire_dt->format("Y-m-d")) {
+            $arrayParam['open'] = 0;
+        }
+    }
+
+    $result = $this->dibi->query('UPDATE flipper SET ', $arrayParam, 'WHERE id_name = %s AND id = %s', $args['name'], $args['id']);
     return $response->withJson($result, 200);
 });
 
