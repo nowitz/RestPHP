@@ -27,7 +27,7 @@ create table flipper
 	border_color varchar(64) default 'white' not null,
 	constraint id	unique (id),
 	constraint flipper_calendar_name_fk
-		foreign key (id_name) references calendar (name)
+		foreign key (id_name) references calendar (name) ON DELETE CASCADE
 );
 
 create index id_flipper	on flipper (id);
@@ -53,7 +53,7 @@ create table warning
 	text text not null,
 	constraint id	unique (id),
 	constraint warning_calendar_fk
-		foreign key (id_name) references calendar (name)
+		foreign key (id_name) references calendar (name) ON DELETE CASCADE
 );
 
 create index id_warning	on warning (id);
