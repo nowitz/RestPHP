@@ -40,6 +40,9 @@ create table user
 	email varchar(128) not null comment 'email',
 	cost tinyint(1) not null comment '0-free / 1 - pracenej',
 	cost_size int(10) not null comment 'vyse castky',
+	active tinyint(1) default '0' not null,
+	created_date timestamp default CURRENT_TIMESTAMP null,
+	end_date timestamp default '0000-00-00 00:00:00' not null,
 	constraint id	unique (id)
 );
 
