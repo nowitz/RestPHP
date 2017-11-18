@@ -89,11 +89,13 @@ $app->post('/version', function (Request $request, Response $response) {
     }
 
     $params = $request->getParsedBody();
+    $resultValue = array();
     $result = 0;
     if (strcmp($params["version"], "1.0.2") !== 0) {
         $result = 1;
     }
-    return $response->withJson($result, 201);
+    array_push($resultValue, $result);
+    return $response->withJson($resultValue, 201);
 });
 
 
