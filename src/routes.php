@@ -76,6 +76,27 @@ $app->post('/login/admin', function (Request $request, Response $response) {
     return $response->withJson($result, 201);
 });
 
+// ----------------------------- Check version app -----------------------------
+
+
+/**
+ * Metoda, ktera zpracovava veskere POST pozadavky
+ */
+$app->post('/version', function (Request $request, Response $response) {
+
+    if (!verifyAuthorization($request, $this)) {
+        return $response->withJson("Bad authorization!", 401);
+    }
+
+    $params = $request->getParsedBody();
+    $result = 0;
+    if (strcmp($params["version"], "1.0.2") !== 0) {
+        $result = 1;
+    }
+    return $response->withJson($result, 201);
+});
+
+
 // ----------------------------- Check calendar name -----------------------------
 
 /**
